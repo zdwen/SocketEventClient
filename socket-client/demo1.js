@@ -1,11 +1,12 @@
 var SocketEventClient = require("./libs/socketEventClient").SocketEventClient;
 
-//var client = new SocketEventClient('http://127.0.0.1:2900/', 'WzdClient_Node');
-var client = new SocketEventClient('http://192.168.1.112:2900/', 'WzdClient_Node');
+var client = new SocketEventClient('http://127.0.0.1:2900/', 'WzdClient_Node');
+//var client = new SocketEventClient('http://192.168.1.112:2900/', 'WzdClient_Node');
 
 
 client.subscribe('PriceChanged', priceChangedHandler, operationCallback);
 client.subscribe('PublishSalesState', publishSalesStateHandler, operationCallback);
+// TODO: enqueue并没有正确执行？
 client.enqueue('PriceChanged', 1, 60, { 'ListingSku' : '5100444'}, operationCallback);
 
 function priceChangedHandler(arg){
