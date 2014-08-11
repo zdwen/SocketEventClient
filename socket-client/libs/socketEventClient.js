@@ -5,6 +5,8 @@ function SocketEventClient (serverHost, clientId) {
 	this.clientId = clientId;
 };
 
+// TODO: 考虑各种异常情况下（特别是网络异常）程序能够保证处于正确状态。比如如果程序退出，如何切断与服务器的连接？
+// TODO: 保存当时状态，重新连接时使用
 SocketEventClient.prototype.subscribe = function (eventName, eventArrivedCallback, operationCallback) {
 	var arg = {
 		'event' : eventName,
