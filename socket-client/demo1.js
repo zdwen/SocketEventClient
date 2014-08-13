@@ -10,6 +10,8 @@ function doWork(){
 	client.enqueue('PriceChanged', 1, 60, { 'ListingSku' : '5100444'}, operationCallback);
 };
 
+console.log('启动完成');
+
 // var client = new SocketEventClient('http://127.0.0.1:2900/', 'WzdClient_Node');
 
 

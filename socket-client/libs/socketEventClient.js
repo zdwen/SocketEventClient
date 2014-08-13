@@ -4,20 +4,45 @@ function SocketEventClient (serverHost, clientId) {
 	this.clientId = clientId;
 	this.eventDic = new Object();
 
-	this.socket = io.connect(serverHost);
+	var options = {
+		'max reconnection attempts' : 3
+		, 'reconnect' : false
+	};
 
-	this.socket.on('connect', function(arg1, arg2){
+	this.sioClient = io.connect(serverHost, options);
+
+	this.sioClient.on('connect', function(arg1, arg2){
 		console.log('++++++++++++++++++++++++++++++++++++已连接上');
-	}.bind(this));
-
-	this.socket.on('connect_failed', function(arg1, arg2){
-
-	}.bind(this));
-
-	this.socket.on('disconnect', function(){
 		this.reSubscribeEvents();
 	}.bind(this));
+
+	this.sioClient.on('connect_failed', function(arg1, arg2){
+		console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!连接失败');
+	}.bind(this));
+
+	this.sioClient.on('disconnect', function(){
+		// this.sioClient.connect(function(){
+		// 	this.reSubscribeEvents();
+		// }.bind(this));
+
+		//while()
+		this.sioClient.socket.reconnect();
+		// if(this.sioClient.socket.connecting == false 
+		// 	&& this.sioClient.socket.reconnection == false 
+		// 	&& this.sioClient.socket.connected == false){
+		// 	this.sioClient.socket.reconnect();
+		// };
+
+
+	//this.reSubscribeEvents();
+	}.bind(this));
 };
+
+// SocketEventClient.prototype.reconnect = function(){
+// 	function reConn (){
+// 		this.sioClient.socket.reconnect();
+// 	}.bind(this);
+// };
 
 SocketEventClient.prototype.subscribe = function (eventName, eventArrivedCallback, operationCallback) {
 	console.log('已开始订阅事件:', eventName);
@@ -38,12 +63,12 @@ SocketEventClient.prototype.subscribe = function (eventName, eventArrivedCallbac
 		'requestId' : this.genGuid()
 	};
 	
-	this.socket.removeAllListeners(eventName);
-	this.socket.on(eventName, function(msg){
+	this.sioClient.removeAllListeners(eventName);
+	this.sioClient.on(eventName, function(msg){
 		return eventArrivedCallback(msg.args);
 	});
 
-	this.socket.emit('subscribe', arg, function(emitResult){
+	this.sioClient.emit('subscribe', arg, function(emitResult){
 		subscribeResult.status = emitResult.status;
 
 		if(emitResult.status == 'SUCCESS')
@@ -64,7 +89,7 @@ SocketEventClient.prototype.enqueue = function (eventName, tryTimes, timeout, pa
 		'args' : params
 	};
 
-	this.socket.emit('enqueue', arg, function(result){
+	this.sioClient.emit('enqueue', arg, function(result){
 		var enqueueResult = {
 			'event' : eventName,
 			'status' : result.status,
@@ -82,12 +107,12 @@ SocketEventClient.prototype.reSubscribeEvent = function(eventName, eventArrivedC
 		'requestId' : this.genGuid()
 	};
 
-	this.socket.removeAllListeners(eventName);
-	this.socket.on(eventName, function(msg){
+	this.sioClient.removeAllListeners(eventName);
+	this.sioClient.on(eventName, function(msg){
 		return eventArrivedCallback(msg.args);
 	});
 
-	this.socket.emit('subscribe', arg, function(emitResult){
+	this.sioClient.emit('subscribe', arg, function(emitResult){
 		console.log('重新订阅成功，事件:', eventName);
 		return;
 	}.bind(this));
