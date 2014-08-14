@@ -12,34 +12,12 @@ function SocketEventClient (serverHost, clientId) {
 	this.sckClient = io.connect(serverHost, options);
 
 	this.sckClient.on('connect', function(arg1, arg2){
-		console.log('++++++++++++++++++++++++++++++++++++已连接上');
 		this.reSubscribeEvents();
 	}.bind(this));
-
-	this.sckClient.on('connect_failed', function(arg1, arg2){
-		console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!连接失败');
-
-		this.reconnect();
-	}.bind(this));
-
-	this.sckClient.on('reconnect_failed', function(arg1, arg2){
-		console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!reconnect_failed');
-	}.bind(this));
-
-	this.sckClient.on('close', function(){
-		console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!连接Close');
-	});
 
 	this.sckClient.on('disconnect', function(){
 		this.reconnect();
 	}.bind(this));
-};
-
-SocketEventClient.prototype.connect = function(){
-	//this.sckClient.socket.connect();
-	var sct = this.sckClient.socket;
-
-
 };
 
 SocketEventClient.prototype.reconnect = function() {

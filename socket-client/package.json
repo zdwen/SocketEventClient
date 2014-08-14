@@ -1,5 +1,28 @@
 {
+	"name" : "socket.event-client",
+	"description": "The wrapper on the socket.io-client just for project SocketEvent",
+	"version": "0.1.0",
+	"main" : "./lib/socketEventClient.js",
 	"dependencies" : {
         "socket.io-client":"0.9.16"
-    }
+    },
+    "repository": {
+	    "type": "git",
+	    "url":"https://github.com/zdwen/SocketEventClient.git"
+	},
+	"author": {
+		"name": "Lincoln Wen",
+		"email": "october731@163.com"
+	},
+	"bugs": {
+		"url": "https://github.com/zdwen/SocketEventClient/issues"
+	},
+	"maintainers":[
+		{
+			"name":"Lincoln Wen",
+			"email":"october731@163.com",
+			"web":"http://wenxi.biz"
+		}
+	],
+	"ketwords":["socket.io-client", "socketEvent"]
 }
