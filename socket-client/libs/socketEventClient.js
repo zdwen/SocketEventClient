@@ -4,31 +4,21 @@ function SocketEventClient (serverHost, clientId) {
 	this.clientId = clientId;
 	this.eventDic = new Object();
 
-	this.sckOption = {
-		connected : false,
-		connecting : false,
-	};
-
 	var options = {
-		'max reconnection attempts' : 3
-		, 'reconnect' : false
-		, redoTransports : true
+		'reconnect' : false
+		, 'auto connect': true
 	};
 
 	this.sckClient = io.connect(serverHost, options);
-	this.sckOption.connecting = true;
 
 	this.sckClient.on('connect', function(arg1, arg2){
 		console.log('++++++++++++++++++++++++++++++++++++已连接上');
-		this.sckOption.connecting = false;
-		this.sckOption.connected = true;
 		this.reSubscribeEvents();
 	}.bind(this));
 
 	this.sckClient.on('connect_failed', function(arg1, arg2){
 		console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!连接失败');
-		this.sckOption.connected = false;
-		//this.sckClient.socket.reconnect();
+
 		this.reconnect();
 	}.bind(this));
 
@@ -41,78 +31,27 @@ function SocketEventClient (serverHost, clientId) {
 	});
 
 	this.sckClient.on('disconnect', function(){
-		// this.sckClient.connect(function(){
-		// 	this.reSubscribeEvents();
-		// }.bind(this));
-
-		//this.reconnect();
-		this.maybeReconnect();
-		//while()
-		//this.sckClient.socket.reconnect();
-		// if(this.sckClient.socket.connecting == false 
-		// 	&& this.sckClient.socket.reconnection == false 
-		// 	&& this.sckClient.socket.connected == false){
-		// 	this.sckClient.socket.reconnect();
-		// };
-
-
-	//this.reSubscribeEvents();
+		this.reconnect();
 	}.bind(this));
 };
 
-SocketEventClient.prototype.reconnect = function(){
-	// function reConn (){
-	// 	this.sckClient.socket.reconnect();
-	// }.bind(this);
+SocketEventClient.prototype.connect = function(){
+	//this.sckClient.socket.connect();
+	var sct = this.sckClient.socket;
 
-	if(this.sckClient.socket.connecting == false 
-		&& this.sckClient.socket.connecting == false 
-		&& this.sckClient.socket.reconnecting == false
-		&& this.sckClient.socket.connected == false){
-		this.sckClient.socket.reconnect();
-		setTimeout(this.reconnect.bind(this), 5 * 1000);
-	}
-	else{
-		return;
-	}
+
 };
 
-SocketEventClient.prototype.maybeReconnect =function() {
-	var self = this.sckClient.socket;
+SocketEventClient.prototype.reconnect = function() {
+	var sct = this.sckClient.socket;
 
-	if (self.connected || self.reconnecting) {
+	if (sct.connected || sct.reconnecting)
 		return;
-	};
 
-	if (self.connecting && self.reconnecting) {
-		return self.reconnectionTimer = setTimeout(maybeReconnect.bind(this), 1 * 1000);
-	}
+	sct.connect();
+	sct.publish('reconnecting');
 
-	self.connect();
-	self.publish('reconnecting', 500, 3);
-	self.reconnectionTimer = setTimeout(this.maybeReconnect.bind(this), 1 * 1000);
-
-	// if (self.reconnectionAttempts++ >= maxAttempts) {
-	// 	if (!self.redoTransports) {
-	// 		self.on('connect_failed', maybeReconnect);
-	// 		self.options['try multiple transports'] = true;
-	// 		self.transports = self.origTransports;
-	// 		self.transport = self.getTransport();
-	// 		self.redoTransports = true;
-	// 		self.connect();
-	// 	} else {
-	// 	  	self.publish('reconnect_failed');
-	// 	  	reset();
-	// 	}
-	// } else {
-	// 	// if (self.reconnectionDelay < limit) {
-	// 	//   	self.reconnectionDelay *= 2; // exponential back off
-	// 	// }
-
-	// 	self.connect();
-	// 	self.publish('reconnecting', self.reconnectionDelay, self.reconnectionAttempts);
-	// 	self.reconnectionTimer = setTimeout(maybeReconnect, self.reconnectionDelay);
-	// }
+	setTimeout(this.reconnect.bind(this), 1 * 1000);
 };
 
 SocketEventClient.prototype.subscribe = function (eventName, eventArrivedCallback, operationCallback) {
