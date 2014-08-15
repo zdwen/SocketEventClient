@@ -1,7 +1,7 @@
 {
 	"name" : "socket.event-client",
 	"description": "The wrapper on the socket.io-client just for project SocketEvent",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"main" : "./lib/socketEventClient.js",
 	"dependencies" : {
         "socket.io-client":"0.9.16"
