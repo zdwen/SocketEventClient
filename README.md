@@ -13,20 +13,21 @@ npm i socket.event-client
 - Construct and connect to a socket.io server automatically.
 
 ```JavaScript
-var SocketEventClient = require('socket.event-client').SocketEventClient; 
+var SocketEventClient = require('socket.event-client').SocketEventClient;
 var client = new SocketEventClient('http://192.168.1.112:2900/', 'WzdClient_Node');
 ```
 
 - Subscribe some event named specified.
 
 ```JavaScript
-subscribe('PriceChanged', priceChangedHandler, operationCallback2); client.subscribe('PublishSalesState', publishSalesStateHandler, operationCallback);
+client.subscribe('PriceChanged', priceChangedHandler, operationCallback2); 
+client.subscribe('PublishSalesState', publishSalesStateHandler, operationCallback);
 ```
 
 - Enqueue some event named specified.
 
 ``` JavaScript
-enqueue an event client.enqueue('PriceChanged', 1, 60, { 'ListingSku' : '5100444'}, operationCallback);
+client.enqueue('PriceChanged', 1, 60, { 'ListingSku' : '5100444'}, operationCallback);
 ```
 
 - And the details of the callbacks.
