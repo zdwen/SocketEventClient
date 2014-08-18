@@ -7,7 +7,7 @@
 - npm install
 
 ``` command
-npm i socket.event-client
+npm i socket.event-client@0.1.0
 ```
 
 - Construct and connect to a socket.io server automatically.
