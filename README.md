@@ -17,13 +17,6 @@ var SocketEventClient = require('socket.event-client').SocketEventClient;
 var client = new SocketEventClient('http://192.168.1.112:2900/', 'WzdClient_Node');
 ```
 
-- Subscribe some event named specified.
-
-```JavaScript
-client.subscribe('PriceChanged', priceChangedHandler, operationCallback2); 
-client.subscribe('PublishSalesState', publishSalesStateHandler, operationCallback);
-```
-
 - Register some system events.
 ``` JavaScript
 client.onSubscribeCompleted(subscribeHandler);
